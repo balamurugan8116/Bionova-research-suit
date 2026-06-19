@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BioNova – Research Calculation Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ─── NAV ───────────────────────────────────────────── -->
+<nav>
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="nav-logo" onclick="showView('home')">BioNova <span>Research Suite</span></div>
+  <div class="nav-search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="globalSearch" placeholder="Search calculators…" autocomplete="off" aria-label="Search calculators">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  <div class="font-size-controls" aria-label="Font size">
+    <button class="fs-btn" data-fs="0.92" title="Small text" aria-label="Small text">A</button>
+    <button class="fs-btn active" data-fs="1" title="Medium text" aria-label="Medium text">A</button>
+    <button class="fs-btn fs-lg" data-fs="1.12" title="Large text" aria-label="Large text">A</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-ghost" onclick="showView('home')" title="Home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="btn-ghost" onclick="showView('refs')" title="References">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Refs</span>
+    </button>
+    <button class="btn-ghost" onclick="openModal('quickstart')" title="Quick Start">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>Guide</span>
+    </button>
+    <button class="btn-ghost" onclick="openModal('help')" title="Help">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      <span>Help</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+<!-- ─── APP ───────────────────────────────────────────── -->
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+      </div>
+      <div class="sidebar-brand-text">
+        <strong>BioNova</strong>
+        <span>Life Sciences Toolkit</span>
+      </div>
+    </div>
+
+    <div class="sidebar-favorites" id="sidebarFavorites" style="display:none">
+      <div class="sidebar-section-label">Favorites</div>
+      <div id="sidebarFavList"></div>
+    </div>
+
+    <div class="sidebar-module" data-module="mol">
+      <div class="module-header open" onclick="toggleModule(this)">
+        <span class="mod-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3c0 3 1.5 5 3 7s3 4 3 7-1.5 4-3 4"/><path d="M15 3c0 3-1.5 5-3 7s-3 4-3 7 1.5 4 3 4"/><line x1="9" y1="3" x2="15" y2="3"/><line x1="9" y1="21" x2="15" y2="21"/></svg>
+        </span>
+        <div class="mod-label">
+          <span class="mod-title">Molecular Biology</span>
+          <span class="mod-subtitle">DNA, PCR &amp; sequencing</span>
+        </div>
+        <span class="mod-badge">7</span>
+        <span class="chevron">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </div>
+      <div class="module-items open">
+        <a class="module-item" data-calc="tm" onclick="openCalc('tm')">DNA Melting Temperature (Tm)</a>
+        <a class="module-item" data-calc="mw" onclick="openCalc('mw')">DNA/RNA Molecular Weight</a>
+        <a class="module-item" data-calc="gc" onclick="openCalc('gc')">GC Content Analyzer</a>
+        <a class="module-item" data-calc="pcr" onclick="openCalc('pcr')">PCR Master Mix</a>
+        <a class="module-item" data-calc="copynumber" onclick="openCalc('copynumber')">DNA Copy Number</a>
+        <a class="module-item" data-calc="restrictiondigest" onclick="openCalc('restrictiondigest')">Restriction Digest</a>
+        <a class="module-item" data-calc="agarose" onclick="openCalc('agarose')">Agarose Gel Preparation</a>
+      </div>
+    </div>
+
+    <div class="sidebar-module" data-module="bio">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="mod-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2v6l-2 2v12h10V10l-2-2V2"/><path d="M9 2h6"/><line x1="10" y1="10" x2="14" y2="10"/></svg>
+        </span>
+        <div class="mod-label">
+          <span class="mod-title">Bioprocess Engineering</span>
+          <span class="mod-subtitle">Fermentation &amp; growth</span>
+        </div>
+        <span class="mod-badge">6</span>
+        <span class="chevron">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </div>
+      <div class="module-items">
+        <a class="module-item" data-calc="growthrate" onclick="openCalc('growthrate')">Cell Growth Rate &amp; Doubling Time</a>
+        <a class="module-item" data-calc="mu" onclick="openCalc('mu')">Specific Growth Rate (μ)</a>
+        <a class="module-item" data-calc="biomass" onclick="openCalc('biomass')">Biomass Yield &amp; Productivity</a>
+        <a class="module-item" data-calc="substrate" onclick="openCalc('substrate')">Substrate Consumption Rate</a>
+        <a class="module-item" data-calc="media" onclick="openCalc('media')">Media Preparation</a>
+        <a class="module-item" data-calc="od600" onclick="openCalc('od600')">OD600 Conversion</a>
+      </div>
+    </div>
+
+    <div class="sidebar-module" data-module="ptc">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="mod-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 6 4c2 2 4 4 6 8 2-4 4-6 6-8-2 2-6 4-6 8z"/></svg>
+        </span>
+        <div class="mod-label">
+          <span class="mod-title">Plant Tissue Culture</span>
+          <span class="mod-subtitle">Media &amp; explants</span>
+        </div>
+        <span class="mod-badge">6</span>
+        <span class="chevron">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </div>
+      <div class="module-items">
+        <a class="module-item" data-calc="ms" onclick="openCalc('ms')">MS Media Preparation</a>
+        <a class="module-item" data-calc="pgr" onclick="openCalc('pgr')">Plant Growth Regulator Conc.</a>
+        <a class="module-item" data-calc="dilution" onclick="openCalc('dilution')">Stock Solution &amp; Dilution</a>
+        <a class="module-item" data-calc="multiplication" onclick="openCalc('multiplication')">Explant Multiplication Rate</a>
+        <a class="module-item" data-calc="agarsugar" onclick="openCalc('agarsugar')">Agar &amp; Sucrose Requirement</a>
+        <a class="module-item" data-calc="survival" onclick="openCalc('survival')">Survival Percentage</a>
+      </div>
+    </div>
+
+    <div class="sidebar-module" data-module="mic">
+      <div class="module-header" onclick="toggleModule(this)">
+        <span class="mod-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </span>
+        <div class="mod-label">
+          <span class="mod-title">Microbiology &amp; Lab</span>
+          <span class="mod-subtitle">Solutions &amp; assays</span>
+        </div>
+        <span class="mod-badge">8</span>
+        <span class="chevron">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      </div>
+      <div class="module-items">
+        <a class="module-item" data-calc="molarity" onclick="openCalc('molarity')">Molarity &amp; Normality</a>
+        <a class="module-item" data-calc="serialdilution" onclick="openCalc('serialdilution')">Serial Dilution</a>
+        <a class="module-item" data-calc="buffer" onclick="openCalc('buffer')">Buffer Preparation</a>
+        <a class="module-item" data-calc="pct" onclick="openCalc('pct')">Percentage Solution</a>
+        <a class="module-item" data-calc="cfu" onclick="openCalc('cfu')">CFU Calculator</a>
+        <a class="module-item" data-calc="rpmrcf" onclick="openCalc('rpmrcf')">RPM ↔ RCF Converter</a>
+        <a class="module-item" data-calc="ph" onclick="openCalc('ph')">pH Calculator</a>
+        <a class="module-item" data-calc="unitconv" onclick="openCalc('unitconv')">Unit Conversion Tools</a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span>Developed by <strong>Balamurugan R</strong></span>
+    </div>
+  </aside>
+
+  <main class="main" id="mainContent">
+
+    <!-- HOME -->
+    <div id="view-home">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="hero-label">// v2.0 · Life Sciences Platform</div>
+          <h1>Precision tools for<br><em>modern bioscience</em></h1>
+          <p>27 calculators across molecular biology, bioprocess engineering, plant tissue culture, and microbiology — with step-by-step breakdowns, copy/export, and shareable links.</p>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="openModal('quickstart')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              Quick Start
+            </button>
+            <button class="btn-secondary" onclick="openRandomCalc()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+              Random Calculator
+            </button>
+          </div>
+          <div class="hero-stats">
+            <div class="stat"><div class="stat-num">27</div><div class="stat-label">calculators</div></div>
+            <div class="stat"><div class="stat-num">4</div><div class="stat-label">modules</div></div>
+            <div class="stat"><div class="stat-num">∞</div><div class="stat-label">precision</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="favorites-section" id="favoritesSection" style="display:none">
+        <div class="section-header">
+          <div class="section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Favorites
+          </div>
+        </div>
+        <div class="favorites-grid" id="favoritesList"></div>
+      </div>
+
+      <div class="module-grid">
+        <div class="module-card mc-mol" onclick="openModule('mol')">
+          <div class="mc-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3c0 3 1.5 5 3 7s3 4 3 7-1.5 4-3 4"/><path d="M15 3c0 3-1.5 5-3 7s-3 4-3 7 1.5 4 3 4"/></svg>
+          </div>
+          <div class="mc-title">Molecular Biology</div>
+          <div class="mc-desc">Tm calculator, GC content, PCR master mix, copy number, restriction digest, agarose gel prep.</div>
+          <div class="mc-count">7 calculators</div>
+        </div>
+        <div class="module-card mc-bio" onclick="openModule('bio')">
+          <div class="mc-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2v6l-2 2v12h10V10l-2-2V2"/><path d="M9 2h6"/></svg>
+          </div>
+          <div class="mc-title">Bioprocess Engineering</div>
+          <div class="mc-desc">Growth rate, doubling time, biomass yield, substrate consumption, OD600 conversion.</div>
+          <div class="mc-count">6 calculators</div>
+        </div>
+        <div class="module-card mc-ptc" onclick="openModule('ptc')">
+          <div class="mc-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V12"/><path d="M12 12C12 8 8 6 6 4c2 2 4 4 6 8 2-4 4-6 6-8-2 2-6 4-6 8z"/></svg>
+          </div>
+          <div class="mc-title">Plant Tissue Culture</div>
+          <div class="mc-desc">MS media prep, growth regulator concentration, explant multiplication, survival rate.</div>
+          <div class="mc-count">6 calculators</div>
+        </div>
+        <div class="module-card mc-mic" onclick="openModule('mic')">
+          <div class="mc-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+          </div>
+          <div class="mc-title">Microbiology &amp; General Lab</div>
+          <div class="mc-desc">Molarity, serial dilution, buffer prep, CFU, RPM/RCF, pH, unit conversions.</div>
+          <div class="mc-count">8 calculators</div>
+        </div>
+      </div>
+
+      <div class="recent-section" id="recentSection" style="display:none">
+        <div class="section-header">
+          <div class="section-title">Recent Calculations</div>
+          <button class="btn-text" onclick="confirmClearRecent()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Clear
+          </button>
+        </div>
+        <div class="recent-list" id="recentList"></div>
+      </div>
+    </div>
+
+    <!-- CALCULATOR VIEW -->
+    <div class="calc-view" id="view-calc"></div>
+
+    <!-- REFERENCES -->
+    <div id="view-refs" style="display:none">
+      <div class="hero hero-compact">
+        <div class="hero-content">
+          <div class="hero-label">// constants &amp; equations</div>
+          <h1>Reference Library</h1>
+          <p>Commonly used constants, equations, and conversion factors in life sciences. Click any card to copy.</p>
+        </div>
+      </div>
+      <div class="ref-search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="refSearch" placeholder="Filter references…" aria-label="Filter references">
+      </div>
+      <div class="ref-grid" id="refGrid">
+        <div class="ref-card" data-keywords="avogadro number mole"><h4>Avogadro's Number</h4><div class="ref-value">6.022 × 10²³ mol⁻¹</div></div>
+        <div class="ref-card" data-keywords="gas constant R joule"><h4>Gas Constant (R)</h4><div class="ref-value">8.314 J·mol⁻¹·K⁻¹</div></div>
+        <div class="ref-card" data-keywords="boltzmann constant"><h4>Boltzmann Constant</h4><div class="ref-value">1.381 × 10⁻²³ J·K⁻¹</div></div>
+        <div class="ref-card" data-keywords="dna base molecular weight dAMP dTMP dGMP dCMP"><h4>DNA Base MW (avg)</h4><div class="ref-value">dAMP: 331.2 Da<br>dTMP: 322.2 Da<br>dGMP: 347.2 Da<br>dCMP: 307.2 Da</div></div>
+        <div class="ref-card" data-keywords="rna base molecular weight AMP UMP GMP CMP"><h4>RNA Base MW (avg)</h4><div class="ref-value">AMP: 347.2 Da<br>UMP: 324.2 Da<br>GMP: 363.2 Da<br>CMP: 323.2 Da</div></div>
+        <div class="ref-card" data-keywords="dna absorptivity a260 uv"><h4>DNA Absorptivity</h4><div class="ref-value">dsDNA: 50 μg/mL per A260<br>ssDNA: 33 μg/mL per A260<br>RNA: 40 μg/mL per A260</div></div>
+        <div class="ref-card" data-keywords="ms media murashige skoog macros"><h4>MS Media Macros (g/L)</h4><div class="ref-value">NH₄NO₃: 1.65<br>KNO₃: 1.90<br>CaCl₂: 0.44<br>MgSO₄: 0.37<br>KH₂PO₄: 0.17</div></div>
+        <div class="ref-card" data-keywords="ph buffer tris hepes phosphate citrate"><h4>Common pH Buffers</h4><div class="ref-value">Tris-HCl: pH 7–9<br>HEPES: pH 6.8–8.2<br>Phosphate: pH 5.8–8.0<br>Citrate: pH 3.0–6.2</div></div>
+        <div class="ref-card" data-keywords="od600 e coli yeast cells"><h4>OD600 Conversions</h4><div class="ref-value">E. coli: ~8×10⁸ cells/mL per OD<br>S. cerevisiae: ~3×10⁷ cells/mL</div></div>
+        <div class="ref-card" data-keywords="agarose gel electrophoresis concentration"><h4>Agarose Concentrations</h4><div class="ref-value">0.5–1%: &gt;5 kb<br>1–1.5%: 1–5 kb<br>2–3%: 100–500 bp</div></div>
+        <div class="ref-card" data-keywords="pcr tm melting temperature primer"><h4>PCR Tm Rules</h4><div class="ref-value">Basic: 2(A+T)+4(G+C)<br>Salt-adjusted: Unique formula<br>Nearest-neighbor: Gold std.</div></div>
+        <div class="ref-card" data-keywords="unit prefix micro nano pico kilo"><h4>Unit Prefixes</h4><div class="ref-value">μ = 10⁻⁶  n = 10⁻⁹<br>p = 10⁻¹²  f = 10⁻¹⁵<br>m = 10⁻³  k = 10³</div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Site footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">BioNova <span>Research Suite</span></div>
+    <div class="footer-links">
+      <button onclick="openModal('about')">About</button>
+      <button onclick="openModal('help')">Help</button>
+      <button onclick="showView('refs')">References</button>
+    </div>
+    <div class="footer-credit">Developed by <strong>Balamurugan R</strong></div>
+  </div>
+</footer>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+  <button class="mob-nav-item active" data-view="home" onclick="showView('home')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/></svg>
+    <span>Home</span>
+  </button>
+  <button class="mob-nav-item" data-view="modules" onclick="toggleSidebarMobile()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span>Modules</span>
+  </button>
+  <button class="mob-nav-item" data-view="refs" onclick="showView('refs')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span>Refs</span>
+  </button>
+</nav>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg">Result copied!</span>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
